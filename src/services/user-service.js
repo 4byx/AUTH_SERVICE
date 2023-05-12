@@ -42,6 +42,23 @@ class UserService {
     }
   }
 
+  async isAuthenticated(token) {
+    try {
+      const response = this.verifyToken(token);
+      if (!response) {
+        throw { error: "Invalid token" };
+      }
+      const user = this.userRepository.getUserById(response.id);
+      if (!user) {
+        throw { error: "No such user find in database" };
+      }
+      return user.id;
+    } catch (error) {
+      console.log("something went wrong in auth process");
+      throw { error };
+    }
+  }
+
   // these functions are usefull for signing in but before creating controller for signing in
   // we have to also create the the middle ware for userAuth
   verifyToken(token) {
